@@ -1,0 +1,11 @@
+add_llvm_component_library(LLVMSISCDesc
+  SISCAsmBackend.cpp
+  SISCELFObjectWriter.cpp
+  SISCInstPrinter.cpp
+  SISCMCAsmInfo.cpp
+  SISCMCCodeEmitter.cpp
+  SISCMCExpr.cpp
+  SISCMCTargetDesc.cpp
+  SISCTargetStreamer.cpp
+  SISCELFStreamer.cpp
+)

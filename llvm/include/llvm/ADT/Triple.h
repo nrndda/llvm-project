@@ -72,6 +72,7 @@ public:
     sparc,          // Sparc: sparc
     sparcv9,        // Sparcv9: Sparcv9
     sparcel,        // Sparc: (endianness = little). NB: 'Sparcle' is a CPU variant
+    sisc,
     systemz,        // SystemZ: s390x
     tce,            // TCE (http://tce.cs.tut.fi/): tce
     tcele,          // TCE little endian (http://tce.cs.tut.fi/): tcele
@@ -729,6 +730,11 @@ public:
   /// Tests whether the target is RISC-V (32- and 64-bit).
   bool isRISCV() const {
     return getArch() == Triple::riscv32 || getArch() == Triple::riscv64;
+  }
+
+  /// Tests whether the target is SISC.
+  bool isSISC() const {
+    return getArch() == Triple::sisc;
   }
 
   /// Tests whether the target is SystemZ.

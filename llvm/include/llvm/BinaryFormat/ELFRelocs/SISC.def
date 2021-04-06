@@ -1,0 +1,12 @@
+
+#ifndef ELF_RELOC
+#error "ELF_RELOC must be defined"
+#endif
+
+ELF_RELOC(R_SISC_NONE,               0)
+ELF_RELOC(R_SISC_32,                 1)
+ELF_RELOC(R_SISC_RELATIVE,           2)
+ELF_RELOC(R_SISC_COPY,               3)
+ELF_RELOC(R_SISC_BRANCH,             4)
+ELF_RELOC(R_SISC_JAL,                5)
+ELF_RELOC(R_SISC_CALL,               6)

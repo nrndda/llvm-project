@@ -152,6 +152,13 @@ StringRef llvm::object::getELFRelocationTypeName(uint32_t Machine,
       break;
     }
     break;
+  case ELF::EM_SISC:
+    switch (Type) {
+#include "llvm/BinaryFormat/ELFRelocs/SISC.def"
+    default:
+      break;
+    }
+    break;
   default:
     break;
   }

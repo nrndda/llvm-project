@@ -1114,6 +1114,8 @@ StringRef ELFObjectFile<ELFT>::getFileFormatName() const {
       return "elf32-sparc";
     case ELF::EM_AMDGPU:
       return "elf32-amdgpu";
+    case ELF::EM_SISC:
+      return "elf32-sisc";
     default:
       return "elf32-unknown";
     }
@@ -1221,6 +1223,9 @@ template <class ELFT> Triple::ArchType ELFObjectFile<ELFT>::getArch() const {
 
   case ELF::EM_VE:
     return Triple::ve;
+
+  case ELF::EM_SISC:
+    return Triple::sisc;
   default:
     return Triple::UnknownArch;
   }
