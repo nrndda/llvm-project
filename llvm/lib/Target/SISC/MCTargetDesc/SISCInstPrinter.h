@@ -42,8 +42,6 @@ public:
                         const MCSubtargetInfo &STI, raw_ostream &O);
   void printVTypeI(const MCInst *MI, unsigned OpNo, const MCSubtargetInfo &STI,
                    raw_ostream &O);
-  void printVMaskReg(const MCInst *MI, unsigned OpNo,
-                     const MCSubtargetInfo &STI, raw_ostream &O);
   void printSImm5Plus1(const MCInst *MI, unsigned OpNo,
                        const MCSubtargetInfo &STI, raw_ostream &O);
 

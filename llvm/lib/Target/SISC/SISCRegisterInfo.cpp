@@ -27,16 +27,10 @@
 
 using namespace llvm;
 
-static_assert(SISC::X1 == SISC::X0 + 1, "Register list not consecutive");
-static_assert(SISC::X31 == SISC::X0 + 31, "Register list not consecutive");
-static_assert(SISC::F1_F == SISC::F0_F + 1, "Register list not consecutive");
-static_assert(SISC::F31_F == SISC::F0_F + 31,
-              "Register list not consecutive");
-static_assert(SISC::F1_D == SISC::F0_D + 1, "Register list not consecutive");
-static_assert(SISC::F31_D == SISC::F0_D + 31,
-              "Register list not consecutive");
-static_assert(SISC::V1 == SISC::V0 + 1, "Register list not consecutive");
-static_assert(SISC::V31 == SISC::V0 + 31, "Register list not consecutive");
+static_assert(SISC::X1    == SISC::X0   +  1, "Register list not consecutive");
+static_assert(SISC::X31   == SISC::X0   + 31, "Register list not consecutive");
+static_assert(SISC::F1_F  == SISC::F0_F +  1, "Register list not consecutive");
+static_assert(SISC::F31_F == SISC::F0_F + 31, "Register list not consecutive");
 
 SISCRegisterInfo::SISCRegisterInfo(unsigned HwMode)
     : SISCGenRegisterInfo(SISC::X1, /*DwarfFlavour*/0, /*EHFlavor*/0,
@@ -46,8 +40,6 @@ const MCPhysReg *
 SISCRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
   auto &Subtarget = MF->getSubtarget<SISCSubtarget>();
   if (MF->getFunction().hasFnAttribute("interrupt")) {
-    if (Subtarget.hasStdExtD())
-      return CSR_XLEN_F64_Interrupt_SaveList;
     if (Subtarget.hasStdExtF())
       return CSR_XLEN_F32_Interrupt_SaveList;
     return CSR_Interrupt_SaveList;
@@ -62,9 +54,6 @@ SISCRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
   case SISCABI::ABI_ILP32F:
   case SISCABI::ABI_LP64F:
     return CSR_ILP32F_LP64F_SaveList;
-  case SISCABI::ABI_ILP32D:
-  case SISCABI::ABI_LP64D:
-    return CSR_ILP32D_LP64D_SaveList;
   }
 }
 
@@ -202,8 +191,5 @@ SISCRegisterInfo::getCallPreservedMask(const MachineFunction & MF,
   case SISCABI::ABI_ILP32F:
   case SISCABI::ABI_LP64F:
     return CSR_ILP32F_LP64F_RegMask;
-  case SISCABI::ABI_ILP32D:
-  case SISCABI::ABI_LP64D:
-    return CSR_ILP32D_LP64D_RegMask;
   }
 }

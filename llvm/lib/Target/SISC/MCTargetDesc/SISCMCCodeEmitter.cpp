@@ -80,10 +80,6 @@ public:
   unsigned getImmOpValue(const MCInst &MI, unsigned OpNo,
                          SmallVectorImpl<MCFixup> &Fixups,
                          const MCSubtargetInfo &STI) const;
-
-  unsigned getVMaskReg(const MCInst &MI, unsigned OpNo,
-                       SmallVectorImpl<MCFixup> &Fixups,
-                       const MCSubtargetInfo &STI) const;
 };
 } // end anonymous namespace
 
@@ -379,22 +375,6 @@ unsigned SISCMCCodeEmitter::getImmOpValue(const MCInst &MI, unsigned OpNo,
   }
 
   return 0;
-}
-
-unsigned SISCMCCodeEmitter::getVMaskReg(const MCInst &MI, unsigned OpNo,
-                                         SmallVectorImpl<MCFixup> &Fixups,
-                                         const MCSubtargetInfo &STI) const {
-  MCOperand MO = MI.getOperand(OpNo);
-  assert(MO.isReg() && "Expected a register.");
-
-  switch (MO.getReg()) {
-  default:
-    llvm_unreachable("Invalid mask register.");
-  case SISC::V0:
-    return 0;
-  case SISC::NoRegister:
-    return 1;
-  }
 }
 
 #include "SISCGenMCCodeEmitter.inc"

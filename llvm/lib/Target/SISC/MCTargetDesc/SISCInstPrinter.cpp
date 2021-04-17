@@ -161,19 +161,6 @@ void SISCInstPrinter::printVTypeI(const MCInst *MI, unsigned OpNo,
   O << "e" << Sew << ",m" << Lmul;
 }
 
-void SISCInstPrinter::printVMaskReg(const MCInst *MI, unsigned OpNo,
-                                     const MCSubtargetInfo &STI,
-                                     raw_ostream &O) {
-  const MCOperand &MO = MI->getOperand(OpNo);
-
-  assert(MO.isReg() && "printVMaskReg can only print register operands");
-  if (MO.getReg() == SISC::NoRegister)
-    return;
-  O << ", ";
-  printRegName(O, MO.getReg());
-  O << ".t";
-}
-
 void SISCInstPrinter::printSImm5Plus1(const MCInst *MI, unsigned OpNo,
                                        const MCSubtargetInfo &STI,
                                        raw_ostream &O) {

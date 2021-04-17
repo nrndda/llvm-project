@@ -1932,18 +1932,6 @@ static bool CC_SISC_FastCC(unsigned ValNo, MVT ValVT, MVT LocVT,
     }
   }
 
-  if (LocVT == MVT::f64) {
-    static const MCPhysReg FPR64List[] = {
-        SISC::F10_D, SISC::F11_D, SISC::F12_D, SISC::F13_D, SISC::F14_D,
-        SISC::F15_D, SISC::F16_D, SISC::F17_D, SISC::F0_D,  SISC::F1_D,
-        SISC::F2_D,  SISC::F3_D,  SISC::F4_D,  SISC::F5_D,  SISC::F6_D,
-        SISC::F7_D,  SISC::F28_D, SISC::F29_D, SISC::F30_D, SISC::F31_D};
-    if (unsigned Reg = State.AllocateReg(FPR64List)) {
-      State.addLoc(CCValAssign::getReg(ValNo, ValVT, Reg, LocVT, LocInfo));
-      return false;
-    }
-  }
-
   if (LocVT == MVT::i32 || LocVT == MVT::f32) {
     unsigned Offset4 = State.AllocateStack(4, Align(4));
     State.addLoc(CCValAssign::getMem(ValNo, ValVT, Offset4, LocVT, LocInfo));
@@ -2661,10 +2649,7 @@ SISCTargetLowering::getRegForInlineAsmConstraint(const TargetRegisterInfo *TRI,
     case 'r':
       return std::make_pair(0U, &SISC::GPRRegClass);
     case 'f':
-      if (Subtarget.hasStdExtF() && VT == MVT::f32)
-        return std::make_pair(0U, &SISC::FPR32RegClass);
-      if (Subtarget.hasStdExtD() && VT == MVT::f64)
-        return std::make_pair(0U, &SISC::FPR64RegClass);
+      return std::make_pair(0U, &SISC::FPR32RegClass);
       break;
     default:
       break;

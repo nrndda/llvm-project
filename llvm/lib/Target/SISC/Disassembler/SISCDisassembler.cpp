@@ -87,28 +87,6 @@ static DecodeStatus DecodeFPR32RegisterClass(MCInst &Inst, uint64_t RegNo,
   return MCDisassembler::Success;
 }
 
-static DecodeStatus DecodeFPR32CRegisterClass(MCInst &Inst, uint64_t RegNo,
-                                              uint64_t Address,
-                                              const void *Decoder) {
-  if (RegNo >= 8) {
-    return MCDisassembler::Fail;
-  }
-  Register Reg = SISC::F8_F + RegNo;
-  Inst.addOperand(MCOperand::createReg(Reg));
-  return MCDisassembler::Success;
-}
-
-static DecodeStatus DecodeFPR64RegisterClass(MCInst &Inst, uint64_t RegNo,
-                                             uint64_t Address,
-                                             const void *Decoder) {
-  if (RegNo >= 32)
-    return MCDisassembler::Fail;
-
-  Register Reg = SISC::F0_D + RegNo;
-  Inst.addOperand(MCOperand::createReg(Reg));
-  return MCDisassembler::Success;
-}
-
 static DecodeStatus DecodeFPR64CRegisterClass(MCInst &Inst, uint64_t RegNo,
                                               uint64_t Address,
                                               const void *Decoder) {
@@ -116,64 +94,6 @@ static DecodeStatus DecodeFPR64CRegisterClass(MCInst &Inst, uint64_t RegNo,
     return MCDisassembler::Fail;
   }
   Register Reg = SISC::F8_D + RegNo;
-  Inst.addOperand(MCOperand::createReg(Reg));
-  return MCDisassembler::Success;
-}
-
-static DecodeStatus DecodeGPRNoX0RegisterClass(MCInst &Inst, uint64_t RegNo,
-                                               uint64_t Address,
-                                               const void *Decoder) {
-  if (RegNo == 0) {
-    return MCDisassembler::Fail;
-  }
-
-  return DecodeGPRRegisterClass(Inst, RegNo, Address, Decoder);
-}
-
-static DecodeStatus DecodeGPRNoX0X2RegisterClass(MCInst &Inst, uint64_t RegNo,
-                                                 uint64_t Address,
-                                                 const void *Decoder) {
-  if (RegNo == 2) {
-    return MCDisassembler::Fail;
-  }
-
-  return DecodeGPRNoX0RegisterClass(Inst, RegNo, Address, Decoder);
-}
-
-static DecodeStatus DecodeGPRCRegisterClass(MCInst &Inst, uint64_t RegNo,
-                                            uint64_t Address,
-                                            const void *Decoder) {
-  if (RegNo >= 8)
-    return MCDisassembler::Fail;
-
-  Register Reg = SISC::X8 + RegNo;
-  Inst.addOperand(MCOperand::createReg(Reg));
-  return MCDisassembler::Success;
-}
-
-static DecodeStatus DecodeVRRegisterClass(MCInst &Inst, uint64_t RegNo,
-                                          uint64_t Address,
-                                          const void *Decoder) {
-  if (RegNo >= 32)
-    return MCDisassembler::Fail;
-
-  Register Reg = SISC::V0 + RegNo;
-  Inst.addOperand(MCOperand::createReg(Reg));
-  return MCDisassembler::Success;
-}
-
-static DecodeStatus decodeVMaskReg(MCInst &Inst, uint64_t RegNo,
-                                   uint64_t Address, const void *Decoder) {
-  Register Reg = SISC::NoRegister;
-  switch (RegNo) {
-  default:
-    return MCDisassembler::Fail;
-  case 0:
-    Reg = SISC::V0;
-    break;
-  case 1:
-    break;
-  }
   Inst.addOperand(MCOperand::createReg(Reg));
   return MCDisassembler::Success;
 }

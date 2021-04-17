@@ -964,15 +964,11 @@ unsigned SISCAsmParser::validateTargetOperandClass(MCParsedAsmOperand &AsmOp,
     return Match_InvalidOperand;
 
   Register Reg = Op.getReg();
-  bool IsRegFPR64 =
-      SISCMCRegisterClasses[SISC::FPR64RegClassID].contains(Reg);
-  bool IsRegFPR64C =
-      SISCMCRegisterClasses[SISC::FPR64CRegClassID].contains(Reg);
+  bool IsRegFPR64 = SISCMCRegisterClasses[SISC::FPR64RegClassID].contains(Reg);
 
   // As the parser couldn't differentiate an FPR32 from an FPR64, coerce the
   // register from FPR64 to FPR32 or FPR64C to FPR32C if necessary.
-  if ((IsRegFPR64 && Kind == MCK_FPR32) ||
-      (IsRegFPR64C && Kind == MCK_FPR32C)) {
+  if ((IsRegFPR64 && Kind == MCK_FPR32)) {
     Op.Reg.RegNum = convertFPR64ToFPR32(Reg);
     return Match_Success;
   }
@@ -1184,10 +1180,6 @@ bool SISCAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
     return Error(ErrorLoc,
                  "operand must be e[8|16|32|64|128|256|512|1024],m[1|2|4|8]");
   }
-  case Match_InvalidVMaskRegister: {
-    SMLoc ErrorLoc = ((SISCOperand &)*Operands[ErrorInfo]).getStartLoc();
-    return Error(ErrorLoc, "operand must be v0.t");
-  }
   case Match_InvalidSImm5Plus1: {
     return generateImmOutOfRangeError(Operands, ErrorInfo, -(1 << 4) + 1,
                                       (1 << 4),
@@ -1202,7 +1194,7 @@ bool SISCAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
 // alternative ABI names), setting RegNo to the matching register. Upon
 // failure, returns true and sets RegNo to 0. If IsRV32E then registers
 // x16-x31 will be rejected.
-static bool matchRegisterNameHelper(bool IsRV32E, Register &RegNo,
+static bool matchRegisterNameHelper(Register &RegNo,
                                     StringRef Name) {
   RegNo = MatchRegisterName(Name);
   // The 32- and 64-bit FPRs have the same asm name. Check that the initial
@@ -1212,8 +1204,6 @@ static bool matchRegisterNameHelper(bool IsRV32E, Register &RegNo,
   static_assert(SISC::F0_D < SISC::F0_F, "FPR matching must be updated");
   if (RegNo == SISC::NoRegister)
     RegNo = MatchRegisterAltName(Name);
-  if (IsRV32E && RegNo >= SISC::X16 && RegNo <= SISC::X31)
-    RegNo = SISC::NoRegister;
   return RegNo == SISC::NoRegister;
 }
 
@@ -1233,7 +1223,7 @@ OperandMatchResultTy SISCAsmParser::tryParseRegister(unsigned &RegNo,
   RegNo = 0;
   StringRef Name = getLexer().getTok().getIdentifier();
 
-  if (matchRegisterNameHelper(isRV32E(), (Register &)RegNo, Name))
+  if (matchRegisterNameHelper((Register &)RegNo, Name))
     return MatchOperand_NoMatch;
 
   getParser().Lex(); // Eat identifier token.
@@ -1600,8 +1590,6 @@ OperandMatchResultTy SISCAsmParser::parseMaskReg(OperandVector &Operands) {
     matchRegisterNameHelper(isRV32E(), RegNo, Name);
 
     if (RegNo == SISC::NoRegister)
-      return MatchOperand_NoMatch;
-    if (RegNo != SISC::V0)
       return MatchOperand_NoMatch;
     SMLoc S = getLoc();
     SMLoc E = SMLoc::getFromPointer(S.getPointer() - 1);
