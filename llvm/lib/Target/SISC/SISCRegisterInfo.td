@@ -37,7 +37,6 @@ def ABIRegAltName : RegAltNameIndex;
 
 let RegAltNameIndices = [ABIRegAltName] in {
   def X0  : SISCReg<0, "x0", ["zero"]>, DwarfRegNum<[0]>;
-  let CostPerUse = 1 in {
   def X1  : SISCReg<1, "x1", ["ra"]>, DwarfRegNum<[1]>;
   def X2  : SISCReg<2, "x2", ["sp"]>, DwarfRegNum<[2]>;
   def X3  : SISCReg<3, "x3", ["gp"]>, DwarfRegNum<[3]>;
@@ -45,7 +44,6 @@ let RegAltNameIndices = [ABIRegAltName] in {
   def X5  : SISCReg<5, "x5", ["t0"]>, DwarfRegNum<[5]>;
   def X6  : SISCReg<6, "x6", ["t1"]>, DwarfRegNum<[6]>;
   def X7  : SISCReg<7, "x7", ["t2"]>, DwarfRegNum<[7]>;
-  }
   def X8  : SISCReg<8, "x8", ["s0", "fp"]>, DwarfRegNum<[8]>;
   def X9  : SISCReg<9, "x9", ["s1"]>, DwarfRegNum<[9]>;
   def X10 : SISCReg<10,"x10", ["a0"]>, DwarfRegNum<[10]>;
@@ -54,7 +52,6 @@ let RegAltNameIndices = [ABIRegAltName] in {
   def X13 : SISCReg<13,"x13", ["a3"]>, DwarfRegNum<[13]>;
   def X14 : SISCReg<14,"x14", ["a4"]>, DwarfRegNum<[14]>;
   def X15 : SISCReg<15,"x15", ["a5"]>, DwarfRegNum<[15]>;
-  let CostPerUse = 1 in {
   def X16 : SISCReg<16,"x16", ["a6"]>, DwarfRegNum<[16]>;
   def X17 : SISCReg<17,"x17", ["a7"]>, DwarfRegNum<[17]>;
   def X18 : SISCReg<18,"x18", ["s2"]>, DwarfRegNum<[18]>;
@@ -71,7 +68,6 @@ let RegAltNameIndices = [ABIRegAltName] in {
   def X29 : SISCReg<29,"x29", ["t4"]>, DwarfRegNum<[29]>;
   def X30 : SISCReg<30,"x30", ["t5"]>, DwarfRegNum<[30]>;
   def X31 : SISCReg<31,"x31", ["t6"]>, DwarfRegNum<[31]>;
-  }
 }
 def XLenVT : ValueTypeByHwMode<[DefaultMode],
                                [i32]>;
@@ -85,49 +81,6 @@ def GPR : RegisterClass<"SISC", [XLenVT], 32, (add
     (sequence "X%u", 8, 9),
     (sequence "X%u", 18, 27),
     (sequence "X%u", 0, 4)
-  )> {
-  let RegInfos = RegInfoByHwMode<
-      [DefaultMode],
-      [RegInfo<32,32,32>]>;
-}
-
-def GPRX0 : RegisterClass<"SISC", [XLenVT], 32, (add X0)> {
-  let RegInfos = RegInfoByHwMode<
-      [DefaultMode],
-      [RegInfo<32,32,32>]>;
-}
-
-// The order of registers represents the preferred allocation sequence.
-// Registers are listed in the order caller-save, callee-save, specials.
-def GPRNoX0 : RegisterClass<"SISC", [XLenVT], 32, (add
-    (sequence "X%u", 10, 17),
-    (sequence "X%u", 5, 7),
-    (sequence "X%u", 28, 31),
-    (sequence "X%u", 8, 9),
-    (sequence "X%u", 18, 27),
-    (sequence "X%u", 1, 4)
-  )> {
-  let RegInfos = RegInfoByHwMode<
-      [DefaultMode],
-      [RegInfo<32,32,32>]>;
-}
-
-def GPRNoX0X2 : RegisterClass<"SISC", [XLenVT], 32, (add
-    (sequence "X%u", 10, 17),
-    (sequence "X%u", 5, 7),
-    (sequence "X%u", 28, 31),
-    (sequence "X%u", 8, 9),
-    (sequence "X%u", 18, 27),
-    X1, X3, X4
-  )> {
-  let RegInfos = RegInfoByHwMode<
-      [DefaultMode],
-      [RegInfo<32,32,32>]>;
-}
-
-def GPRC : RegisterClass<"SISC", [XLenVT], 32, (add
-    (sequence "X%u", 10, 15),
-    (sequence "X%u", 8, 9)
   )> {
   let RegInfos = RegInfoByHwMode<
       [DefaultMode],
@@ -187,7 +140,6 @@ let RegAltNameIndices = [ABIRegAltName] in {
   def F29_F : SISCReg<29,"f29", ["ft9"]>, DwarfRegNum<[61]>;
   def F30_F : SISCReg<30,"f30", ["ft10"]>, DwarfRegNum<[62]>;
   def F31_F : SISCReg<31,"f31", ["ft11"]>, DwarfRegNum<[63]>;
-
 }
 
 // The order of registers represents the preferred allocation sequence,
@@ -198,11 +150,6 @@ def FPR32 : RegisterClass<"SISC", [f32], 32, (add
     (sequence "F%u_F", 28, 31),
     (sequence "F%u_F", 8, 9),
     (sequence "F%u_F", 18, 27)
-)>;
-
-def FPR32C : RegisterClass<"SISC", [f32], 32, (add
-  (sequence "F%u_F", 10, 15),
-  (sequence "F%u_F", 8, 9)
 )>;
 
 class RegisterTypes<list<ValueType> reg_types> {

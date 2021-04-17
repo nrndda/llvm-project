@@ -115,8 +115,6 @@ def uimmlog2xlen : Operand<XLenVT>, ImmLeaf<XLenVT, [{
     int64_t Imm;
     if (!MCOp.evaluateAsConstantImm(Imm))
       return false;
-    if (STI.getTargetTriple().isArch64Bit())
-      return  isUInt<6>(Imm);
     return isUInt<5>(Imm);
   }];
   let OperandType = "OPERAND_UIMMLOG2XLEN";
@@ -320,7 +318,7 @@ def NegImm : SDNodeXForm<imm, [{
 // Instruction Formats
 //===----------------------------------------------------------------------===//
 
-include "SISCInstrFormats.td"
+include "SISCInstrFormats/SISCInstrFormats.td"
 
 //===----------------------------------------------------------------------===//
 // Instruction Class Templates
@@ -1167,14 +1165,3 @@ def : Pat<(trap), (UNIMP)>;
 // debugger if possible.
 def : Pat<(debugtrap), (EBREAK)>;
 
-//===----------------------------------------------------------------------===//
-// Standard extensions
-//===----------------------------------------------------------------------===//
-
-include "SISCInstrInfoM.td"
-include "SISCInstrInfoA.td"
-include "SISCInstrInfoF.td"
-include "SISCInstrInfoD.td"
-include "SISCInstrInfoC.td"
-include "SISCInstrInfoB.td"
-include "SISCInstrInfoV.td"
